@@ -1,34 +1,39 @@
-import express from 'express'
-import { createBook, updateBook } from '../controllers/bookController';
-import upload from '../utils/multer';
-import { auth } from '../middlewares/auth';
+import express from "express";
+import {
+  createBook,
+  listbooks,
+  updateBook,
+} from "../controllers/bookController";
+import upload from "../utils/multer";
+import { auth } from "../middlewares/auth";
 
-
-
-
-const bookRoute = express.Router()
-
-
+const bookRoute = express.Router();
 
 //routes
-bookRoute.post('/create', auth, upload.fields([
-    {name:'coverImage' , maxCount:1},
-    {name:'file' , maxCount:1}
-    
-
-]),createBook)
+bookRoute.post(
+  "/create",
+  auth,
+  upload.fields([
+    { name: "coverImage", maxCount: 1 },
+    { name: "file", maxCount: 1 },
+  ]),
+  createBook
+);
 
 //update book
 
-bookRoute.patch('/:bookId', auth, upload.fields([
-    {name:'coverImage' , maxCount:1},
-    {name:'file' , maxCount:1}
-    
+bookRoute.patch(
+  "/:bookId",
+  auth,
+  upload.fields([
+    { name: "coverImage", maxCount: 1 },
+    { name: "file", maxCount: 1 },
+  ]),
+  updateBook
+);
 
-]),updateBook)
+//get all books
 
-
-
-
+bookRoute.get("/", listbooks);
 
 export default bookRoute;
