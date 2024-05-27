@@ -1,5 +1,6 @@
 import {v2 as cloudinary} from 'cloudinary';
 import { config } from '../config/config';
+import fs from 'fs'
 
           
 cloudinary.config({ 
@@ -9,4 +10,6 @@ cloudinary.config({
 });
 
 
-export default cloudinary;
+
+
+export  default cloudinary;
