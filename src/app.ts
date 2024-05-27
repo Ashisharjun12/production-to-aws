@@ -5,6 +5,9 @@ import userRoute from "./routes/userRoute";
 
 const app = express();
 
+//important middlewares
+app.use(express.json())
+
 app.get("/", (req, res) => {
   res.json({ meg: "server is running..." });
 });
