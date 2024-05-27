@@ -179,9 +179,13 @@ const singleBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const getBook = await bookmodel.findById({ _id: bookId });
 
+    if(!getBook){
+      return next(createHttpError(500 , "got error finding books"))
+    }
+
     return res.json({ msg: "getting single book", getBook });
   } catch (error) {
-    return next(createHttpError(500, "error got while getting single book"));
+    return next(createHttpError(500, "something went wrong"));
   }
 };
 
