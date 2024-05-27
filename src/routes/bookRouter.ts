@@ -1,5 +1,5 @@
 import express from 'express'
-import { createBook } from '../controllers/bookController';
+import { createBook, updateBook } from '../controllers/bookController';
 import upload from '../utils/multer';
 import { auth } from '../middlewares/auth';
 
@@ -17,6 +17,15 @@ bookRoute.post('/create', auth, upload.fields([
     
 
 ]),createBook)
+
+//update book
+
+bookRoute.patch('/:bookId', auth, upload.fields([
+    {name:'coverImage' , maxCount:1},
+    {name:'file' , maxCount:1}
+    
+
+]),updateBook)
 
 
 
