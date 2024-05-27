@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createBook,
+  deleteBook,
   listbooks,
   singleBook,
   updateBook,
@@ -40,5 +41,9 @@ bookRoute.get("/", listbooks);
 //getting single book
 
 bookRoute.get('/:bookId' , singleBook)
+
+//delete book
+
+bookRoute.delete('/:bookId', auth, deleteBook)
 
 export default bookRoute;

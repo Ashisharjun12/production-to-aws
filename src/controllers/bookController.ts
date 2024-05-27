@@ -179,8 +179,8 @@ const singleBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const getBook = await bookmodel.findById({ _id: bookId });
 
-    if(!getBook){
-      return next(createHttpError(500 , "got error finding books"))
+    if (!getBook) {
+      return next(createHttpError(500, "got error finding books"));
     }
 
     return res.json({ msg: "getting single book", getBook });
@@ -189,4 +189,64 @@ const singleBook = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { createBook, updateBook, listbooks, singleBook };
+const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
+  const bookId = req.params.bookId;
+
+
+  const book = await bookmodel.findOne({ _id: bookId });
+
+  //check book exist
+  if (!book) {
+    return next(createHttpError(400, "book not found"));
+  }
+
+  //check user auth the book
+  const _req = req as AuthRequest;
+
+  if (book.author.toString() !== _req.userId) {
+    return next(createHttpError(403, "Unauthozized Error"));
+  }
+
+  //getting cloundinary book id to delete with folder
+
+  const coverfile = book.coverImage.split("/");
+
+  const coverImagePublicId =
+    coverfile.at(-2) + "/" + coverfile.at(-1)?.split(".").at(-2);
+
+  const bookFile = book.file.split("/");
+
+  const bookFilePublicId = bookFile.at(-2) + "/" + bookFile.at(-1);
+
+  console.log("coverimgId", coverImagePublicId);
+  console.log("filepublieId", bookFilePublicId);
+
+
+  
+
+  //destroy files from cloudinary
+
+  try {
+    
+    await cloudinary.uploader.destroy(coverImagePublicId);
+
+    await cloudinary.uploader.destroy(bookFilePublicId, {
+      resource_type: "raw", //only for pdf
+    });
+
+  } catch (error) {
+
+    return next(createHttpError(500 , "getting error while deleting data..."))
+    
+  }
+
+ 
+
+  //delete from database
+
+  await bookmodel.deleteOne({ _id: bookId });
+
+  return res.sendStatus(204).json({ msg: "book deleted!!" });
+};
+
+export { createBook, updateBook, listbooks, singleBook, deleteBook };
