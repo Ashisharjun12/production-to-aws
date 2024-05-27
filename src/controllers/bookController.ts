@@ -5,8 +5,12 @@ import fs from "fs";
 import createHttpError, { HttpError } from "http-errors";
 import bookmodel from "../models/bookmodel";
 
+export interface AuthRequest extends Request {
+    userId: string;
+  }
+
 const createBook = async (req: Request, res: Response, next: NextFunction) => {
-  const { title, genre,author } = req.body;
+  const { title, genre } = req.body;
 
   try {
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
@@ -57,9 +61,11 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
 
     //create book
 
+    const _req = req as AuthRequest;
+
     const newBook = await bookmodel.create({
       title,
-      author: "6653f4e9e55b8788c4e81207",
+      author:_req.userId,
       genre,
       file: bookFileUpload.secure_url,
       coverImage: uploadData.secure_url,
