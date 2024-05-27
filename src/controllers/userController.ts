@@ -55,20 +55,62 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
       expiresIn: "7d",
     });
 
-    
-       //response
-   res.json({ msg: "user register success", accessToken: token });
-   
+    //response
+    res.status(201).json({ msg: "user register success", accessToken: token });
   } catch (error) {
     return next(
       createHttpError(500, "something went wrong in token generation")
     );
   }
-
-
-
-
-
 };
 
-export { createUser };
+const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+  //validation
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    const error = createHttpError(400, "All Fields Required!!");
+
+    return next(error);
+  }
+
+  //dbcall
+let user;
+  try {
+     user = await usermodel.findOne({ email });
+
+    if (!user) {
+      return next(createHttpError(400, "User not found"));
+    }
+  } catch (error) {
+    return next(createHttpError(500, "internal server error"));
+  }
+
+  //match passsword
+
+  try {
+    const isMatch = await bcrypt.compare(password, user.password as string);
+
+    if (!isMatch) {
+      return next(createHttpError(400, "email and password is incorrect!!"));
+    }
+  } catch (error) {
+    return next(createHttpError(500, "something went  wrong"));
+  }
+
+  //create access token
+
+  try {
+    const token = sign({ sub: user._id }, config.jwtsecret as string, {
+      expiresIn: "7d",
+    });
+
+    //response
+
+    res.json({ msg: "ok", accessToken: token });
+  } catch (error) {
+    return next(createHttpError(500, "something went wrong"));
+  }
+};
+
+export { createUser, loginUser };
