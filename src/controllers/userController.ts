@@ -19,11 +19,15 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 
   //database call
 
-  const user = await usermodel.findOne({ email: email });
+  try {
+    const user = await usermodel.findOne({ email: email });
 
-  if (user) {
-    const error = createHttpError(400, "User Already Exist!!");
-    next(error);
+    if (user) {
+      const error = createHttpError(400, "User Already Exist!!");
+      next(error);
+    }
+  } catch (error) {
+    return next(createHttpError(500, "error while getting user"));
   }
 
   //hashpassword
@@ -31,20 +35,40 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   const hashpassword = await bcrypt.hash(password, 10);
 
   //store in db
-  const newuser = await usermodel.create({
-    name,
-    email : email,
-    password: hashpassword,
-  });
+
+  let newuser;
+
+  try {
+    newuser = await usermodel.create({
+      name,
+      email: email,
+      password: hashpassword,
+    });
+  } catch (error) {
+    return next(createHttpError(500, "error in user add in db"));
+  }
 
   //token generatation
-  const token = sign({ sub: newuser._id }, config.jwtsecret as string, {
-    expiresIn: "7d",
-  });
 
-  //response
+  try {
+    const token = sign({ sub: newuser._id }, config.jwtsecret as string, {
+      expiresIn: "7d",
+    });
 
-  res.json({ msg: "user register success", accessToken: token });
+    
+       //response
+   res.json({ msg: "user register success", accessToken: token });
+   
+  } catch (error) {
+    return next(
+      createHttpError(500, "something went wrong in token generation")
+    );
+  }
+
+
+
+
+
 };
 
 export { createUser };
