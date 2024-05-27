@@ -163,7 +163,6 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
 
 const listbooks = async (req: Request, res: Response, next: NextFunction) => {
   try {
-
     //add pagination in future
 
     const books = await bookmodel.find();
@@ -174,4 +173,16 @@ const listbooks = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { createBook, updateBook, listbooks };
+const singleBook = async (req: Request, res: Response, next: NextFunction) => {
+  const bookId = req.params.bookId;
+
+  try {
+    const getBook = await bookmodel.findById({ _id: bookId });
+
+    return res.json({ msg: "getting single book", getBook });
+  } catch (error) {
+    return next(createHttpError(500, "error got while getting single book"));
+  }
+};
+
+export { createBook, updateBook, listbooks, singleBook };

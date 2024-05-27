@@ -2,6 +2,7 @@ import express from "express";
 import {
   createBook,
   listbooks,
+  singleBook,
   updateBook,
 } from "../controllers/bookController";
 import upload from "../utils/multer";
@@ -35,5 +36,9 @@ bookRoute.patch(
 //get all books
 
 bookRoute.get("/", listbooks);
+
+//getting single book
+
+bookRoute.get('/:bookId' , singleBook)
 
 export default bookRoute;
