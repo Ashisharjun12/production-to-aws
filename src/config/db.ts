@@ -13,7 +13,7 @@ const connectdb = async () => {
       });
 
 
-    await mongoose.connect(config.mongourl as string);
+    await mongoose.connect("mongodb+srv://merncurd21:merncurdlogin@cluster0.vndx8pf.mongodb.net/"); // for testing using locally db config.mongourl as string for testing purpose
 
    
   } catch (error) {
