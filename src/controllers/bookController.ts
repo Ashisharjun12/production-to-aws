@@ -212,7 +212,7 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   const coverfile = book.coverImage.split("/");
 
   const coverImagePublicId =
-    coverfile.at(-2) + "/" + coverfile.at(-1)?.split(".").at(-2);
+    coverfile.at(-2) + "/" + (coverfile.at(-1)?.split(".").at(-2));
 
   const bookFile = book.file.split("/");
 
@@ -246,7 +246,7 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
 
   await bookmodel.deleteOne({ _id: bookId });
 
-  return res.sendStatus(204).json({ msg: "book deleted!!" });
+  return res.status(204).json({ msg: "book deleted!!" });
 };
 
 export { createBook, updateBook, listbooks, singleBook, deleteBook };
