@@ -4,6 +4,7 @@ import errorHandler from "./middlewares/globalErrorHandler";
 import userRoute from "./routes/userRoute";
 import bookRoute from "./routes/bookRouter";
 import { config } from "./config/config";
+import pyqRoute from "./routes/pyqRouter";
 
 
 const app = express();
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 //router middleware
 app.use( '/api/users',userRoute)
 app.use('/api/books' , bookRoute)
+app.use('/api/pyqs' , pyqRoute)
 
 
 //error handel
