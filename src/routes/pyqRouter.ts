@@ -1,27 +1,44 @@
 import express from "express";
-import { createPyq,  deletePyq,  listPyq,  singlePyq,  updatePyq } from "../controllers/pyqController";
-import { singleBook } from "../controllers/bookController";
+import {
+  createPyq,
+  deletePyq,
+  listPyq,
+  singlePyq,
+  updatePyq,
+} from "../controllers/pyqController";
 import upload from "../utils/multer";
 import { auth } from "../middlewares/auth";
-import { name } from "ejs";
 
-const pyqRoute = express.Router()
-
+const pyqRoute = express.Router();
 
 //routes
 
-pyqRoute.post("/create" ,upload.fields([
+pyqRoute.post(
+  "/create",
+  auth,
+  upload.fields([
     {
-        name:"pyqfile" ,maxCount:1
-    }
-
-]),createPyq)
-pyqRoute.get("/" , listPyq)
-pyqRoute.get("/:pyqId" , singlePyq)
-pyqRoute.patch("/:pyqId" ,updatePyq)
-pyqRoute.delete("/:pyqId" , deletePyq)
-
+      name: "pyqfile",
+      maxCount: 1,
+    },
+  ]),
+  createPyq
+);
+pyqRoute.get("/", listPyq);
+pyqRoute.get("/:pyqId", singlePyq);
+pyqRoute.patch(
+  "/:pyqId",
+  auth,
+  upload.fields([
+    {
+      name: "pyqfile",
+      maxCount: 1,
+    },
+  ]),
+  updatePyq
+);
+pyqRoute.delete("/:pyqId", auth,deletePyq);
 
 //change
 
-export default pyqRoute
+export default pyqRoute;

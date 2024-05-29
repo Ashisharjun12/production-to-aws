@@ -97,6 +97,7 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
     return next(createHttpError(400, "book not found"));
   }
 
+  //check authorization
   const _req = req as AuthRequest;
 
   if (book.author.toString() !== _req.userId) {
@@ -148,7 +149,8 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
     await fs.promises.unlink(bookFilePath);
   }
 
-  const updatebookmoodel = await bookmodel.findOneAndUpdate(
+  //updating to db
+  const updatebookmodel = await bookmodel.findOneAndUpdate(
     { _id: bookId },
     {
       title: title,
@@ -158,7 +160,7 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
     },
     { new: true }
   );
-  res.json(updatebookmoodel);
+  res.json({ msg: "book updated", updatebookmodel });
 };
 
 const listbooks = async (req: Request, res: Response, next: NextFunction) => {
@@ -192,7 +194,6 @@ const singleBook = async (req: Request, res: Response, next: NextFunction) => {
 const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   const bookId = req.params.bookId;
 
-
   const book = await bookmodel.findOne({ _id: bookId });
 
   //check book exist
@@ -212,7 +213,7 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   const coverfile = book.coverImage.split("/");
 
   const coverImagePublicId =
-    coverfile.at(-2) + "/" + (coverfile.at(-1)?.split(".").at(-2));
+    coverfile.at(-2) + "/" + coverfile.at(-1)?.split(".").at(-2);
 
   const bookFile = book.file.split("/");
 
@@ -221,26 +222,17 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   console.log("coverimgId", coverImagePublicId);
   console.log("filepublieId", bookFilePublicId);
 
-
-  
-
   //destroy files from cloudinary
 
   try {
-    
     await cloudinary.uploader.destroy(coverImagePublicId);
 
     await cloudinary.uploader.destroy(bookFilePublicId, {
       resource_type: "raw", //only for pdf
     });
-
   } catch (error) {
-
-    return next(createHttpError(500 , "getting error while deleting data..."))
-    
+    return next(createHttpError(500, "getting error while deleting data..."));
   }
-
- 
 
   //delete from database
 
