@@ -8,7 +8,7 @@ export interface AuthRequest extends Request {
 }
 
 const auth = async (req: Request, res: Response, next: NextFunction) => {
-  const token = req.header("Authorization");
+  const token = req.header("name");
 
   if (!token) {
     return next(createHttpError(401, "Authorization Error"));

@@ -3,6 +3,7 @@ import { createPyq,  deletePyq,  listPyq,  singlePyq,  updatePyq } from "../cont
 import { singleBook } from "../controllers/bookController";
 import upload from "../utils/multer";
 import { auth } from "../middlewares/auth";
+import { name } from "ejs";
 
 const pyqRoute = express.Router()
 
@@ -17,7 +18,7 @@ pyqRoute.post("/create" ,upload.fields([
 ]),createPyq)
 pyqRoute.get("/" , listPyq)
 pyqRoute.get("/:pyqId" , singlePyq)
-pyqRoute.patch('/:pyqId ' , updatePyq)
+pyqRoute.patch("/:pyqId" ,updatePyq)
 pyqRoute.delete("/:pyqId" , deletePyq)
 
 

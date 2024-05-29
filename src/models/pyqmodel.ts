@@ -26,7 +26,7 @@ const pyqSchema = new mongoose.Schema(
     },
     uploadedby: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "usermodel",
      
     },
   },

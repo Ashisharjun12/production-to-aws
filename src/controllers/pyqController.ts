@@ -4,7 +4,6 @@ import path from "path";
 import fs from "fs";
 import cloudinary from "../utils/cloudinary";
 import pyqmodel from "../models/pyqmodel";
-import { nextTick } from "process";
 
 export interface AuthRequest extends Request {
   userId: string;
@@ -94,7 +93,21 @@ const singlePyq = async (req: Request, res: Response, next: NextFunction) => {
   };
 
 const updatePyq = async (req: Request, res: Response, next: NextFunction) => {
-  res.json({ msg: "update pyq" });
+
+  const { semester , branch ,subject , year } = req.body
+
+   const pyqId = req.params.pyqId;
+
+  //  if( !semester || !branch || !subject || !year){
+  //   return next(createHttpError(500 , "all field required"))
+  //  }
+   
+   const pyq = await pyqmodel.findByIdAndUpdate(pyqId,{
+    
+   })
+   console.log(pyq)
+  return res.json({ msg: "update pyq",pyq });
+
 };
 
 

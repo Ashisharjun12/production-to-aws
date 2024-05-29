@@ -47,21 +47,8 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     return next(createHttpError(500, "error in user add in db"));
   }
-
-  //token generatation
-
-  try {
-    const token = sign({ sub: newuser._id }, config.jwtsecret as string, {
-      expiresIn: "7d",
-    });
-
-    //response
-    res.status(201).json({ msg: "user register success", accessToken: token });
-  } catch (error) {
-    return next(
-      createHttpError(500, "something went wrong in token generation")
-    );
-  }
+ return res.json({msg:"user Register successfully!!" ,_id : newuser._id})
+ 
 };
 
 const loginUser = async (req: Request, res: Response, next: NextFunction) => {
